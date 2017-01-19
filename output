@@ -1,0 +1,67 @@
+/**************** Output*****************
+Enter your name.
+c1
+Welcome c1 to this 2 Phase Application.
+You will receive a vote Request now...
+VOTE_REQUEST
+Please enter COMMIT or ABORT to proceed : 
+commit
+---A new user c2 entered the Appilcation---
+---A new user c3 entered the Appilcation---
+GLOBAL_COMMIT
+
+Enter your name.
+---A new user c1 entered the Appilcation---
+c2
+Welcome c2 to this 2 Phase Application.
+You will receive a vote Request now...
+VOTE_REQUEST
+Please enter COMMIT or ABORT to proceed : 
+commit
+---A new user c3 entered the Appilcation---
+GLOBAL_COMMIT
+
+Enter your name.
+---A new user c1 entered the Appilcation---
+---A new user c2 entered the Appilcation---
+c3
+Welcome c3 to this 2 Phase Application.
+You will receive a vote Request now...
+VOTE_REQUEST
+Please enter COMMIT or ABORT to proceed : 
+commit
+GLOBAL_COMMIT
+
+Now Total clients are : 1
+Now Total clients are : 2
+Now Total clients are : 3
+From 'c1' : COMMIT
+Waiting for inputs from other clients.
+From 'c2' : COMMIT
+Waiting for inputs from other clients.
+From 'c3' : COMMIT
+Commited....
+
+Enter your name.
+c4
+Welcome c4 to this 2 Phase Application.
+You will receive a vote Request now...
+VOTE_REQUEST
+Please enter COMMIT or ABORT to proceed : 
+abort
+GLOBAL_ABORT
+
+Now Total clients are : 1
+Now Total clients are : 2
+Now Total clients are : 3
+From 'c1' : COMMIT
+Waiting for inputs from other clients.
+From 'c2' : COMMIT
+Waiting for inputs from other clients.
+From 'c3' : COMMIT
+Commited....
+Now Total clients are : 4
+From 'c4' : ABORT
+Since aborted we will not wait for inputs from other clients.
+Aborted....
+**************************************/

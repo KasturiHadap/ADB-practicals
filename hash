@@ -1,0 +1,65 @@
+******************** Hash Partition **************************************
+
+create table employee(eid int,ename varchar(20),sal int, doj date) partition by hash(eid) partitions 4;
+Query OK, 0 rows affected (0.29 sec)
+
+mysql> insert into employee values(1,"kasturi",30000,'2015-12-12');
+Query OK, 1 row affected (0.07 sec)
+ 
+explain partitions select * from employee;
++----+-------------+----------+-------------+------+---------------+------+---------+------+------+-------+
+| id | select_type | table    | partitions  | type | possible_keys | key  | key_len | ref  | rows | Extra |
++----+-------------+----------+-------------+------+---------------+------+---------+------+------+-------+
+|  1 | SIMPLE      | employee | p0,p1,p2,p3 | ALL  | NULL          | NULL | NULL    | NULL |   11 |       |
++----+-------------+----------+-------------+------+---------------+------+---------+------+------+-------+
+
+ explain partitions select * from employee where eid=111;
++----+-------------+----------+------------+------+---------------+------+---------+------+------+-------------+
+| id | select_type | table    | partitions | type | possible_keys | key  | key_len | ref  | rows | Extra       |
++----+-------------+----------+------------+------+---------------+------+---------+------+------+-------------+
+|  1 | SIMPLE      | employee | p3         | ALL  | NULL          | NULL | NULL    | NULL |    4 | Using where |
++----+-------------+----------+------------+------+---------------+------+---------+------+------+-------------+
+1 row in set (0.02 sec)
+
+explain partitions select * from employee where ename="kasturi";
++----+-------------+----------+-------------+------+---------------+------+---------+------+------+-------------+
+| id | select_type | table    | partitions  | type | possible_keys | key  | key_len | ref  | rows | Extra       |
++----+-------------+----------+-------------+------+---------------+------+---------+------+------+-------------+
+|  1 | SIMPLE      | employee | p0,p1,p2,p3 | ALL  | NULL          | NULL | NULL    | NULL |   11 | Using where |
++----+-------------+----------+-------------+------+---------------+------+---------+------+------+-------------+
+1 row in set (0.00 sec)
+
+explain partitions select * from employee where eid between '100' and '200';
++----+-------------+----------+-------------+------+---------------+------+---------+------+------+-------------+
+| id | select_type | table    | partitions  | type | possible_keys | key  | key_len | ref  | rows | Extra       |
++----+-------------+----------+-------------+------+---------------+------+---------+------+------+-------------+
+|  1 | SIMPLE      | employee | p0,p1,p2,p3 | ALL  | NULL          | NULL | NULL    | NULL |   11 | Using where |
++----+-------------+----------+-------------+------+---------------+------+---------+------+------+-------------+
+1 row in set (0.00 sec)
+
+******************** Range Partition**************************************
+create table emp1(eid int,ename varchar(20),sal int, doj date) partition by range (YEAR(doj)) (partition p0 values less than (1980), partition p1 values less than (2000), partition p2 values less than (2015));
+Query OK, 0 rows affected (0.15 sec)
+
+explain partitions select * from employee;
++----+-------------+----------+-------------+------+---------------+------+---------+------+------+-------+
+| id | select_type | table    | partitions  | type | possible_keys | key  | key_len | ref  | rows | Extra |
++----+-------------+----------+-------------+------+---------------+------+---------+------+------+-------+
+|  1 | SIMPLE      | employee | p0,p1,p2,p3 | ALL  | NULL          | NULL | NULL    | NULL |   14 |       |
++----+-------------+----------+-------------+------+---------------+------+---------+------+------+-------+
+1 row in set (0.00 sec)
+
+SELECT PARTITION_NAME,TABLE_ROWS FROM INFORMATION_SCHEMA.PARTITIONS  WHERE TABLE_NAME = 'emp1';
++----------------+------------+
+| PARTITION_NAME | TABLE_ROWS |
++----------------+------------+
+| p0             |          1 |
+| p1             |          4 |
+| p2             |          5 |
++----------------+------------+
+3 rows in set (0.00 sec)
+
+ALTER TABLE emp1 ADD PARTITION (     PARTITION p3 VALUES LESS THAN (2020),     PARTITION p4 VALUES LESS THAN MAXVALUE );
+Query OK, 0 rows affected (0.52 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
